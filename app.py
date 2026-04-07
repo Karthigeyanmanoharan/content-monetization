@@ -31,7 +31,7 @@ def set_bg(image_file):
     unsafe_allow_html=True
     )
 
-set_bg('Content_monetization_modeler/v960-ning-30.jpg')
+set_bg(r'C:\Users\ASUS\Desktop\Projects\Content_monetization_modeler\v960-ning-30.jpg')
 st.markdown(
     "<h1 style='text-align: center; color: black;'>Content Monetization Modeler</h1>" \
     "<h4 style='text-align: center; color: black;'>Predict YouTube Ad Revenue Based on Video Performance</h4>", 
@@ -72,30 +72,30 @@ with left_col:
 
 
 
-watch_time_rate = watch_time_minutes/(views*video_length_minutes) if views > 0 else 0
-engagement_rate = (likes + comments) / views if views > 0 else 0
-
-input_df = pd.DataFrame({
-    "watch_time_rate":[watch_time_rate],
-    "watch_time_minutes": [watch_time_minutes],
-    "engagement_rate": [engagement_rate],
-    "category":[category]
-})
 
 
 @st.cache_resource
 def load_model():
-    return joblib.load("Content_monetization_modeler/final_revenue_model.pkl")
+    return joblib.load(r"C:\Users\ASUS\Desktop\Projects\Content_monetization_modeler\final_revenue_model.pkl")
 
 model = load_model()
 
 # -----------------------------------
 # Prediction
 # -----------------------------------
-predicted_revenue = 532.45
+predicted_revenue = None
 
 if predict_btn:
     try:
+        watch_time_rate = watch_time_minutes/(views*video_length_minutes) if views > 0 else 0
+        engagement_rate = (likes + comments) / views if views > 0 else 0
+
+        input_df = pd.DataFrame({
+    "watch_time_rate":[watch_time_rate],
+    "watch_time_minutes": [watch_time_minutes],
+    "engagement_rate": [engagement_rate],
+    "category":[category]
+})
         predicted_revenue = float(model.predict(input_df)[0])
     except Exception as e:
         st.error(f"Prediction error: {e}")
@@ -112,18 +112,32 @@ with right_col:
     </style>
     <div class="custom-line"></div>
     """, unsafe_allow_html=True)
-        st.markdown(f"""
-        <div style="
-            background:#f5f8ff;
-            padding:20px;
-            border-radius:15px;
-            border-left:8px solid red;
-            color:black;
-            font-size:28px;
-            font-weight:700;">
-            Estimated Revenue: ${predicted_revenue:,.2f}
-        </div>
-        """, unsafe_allow_html=True)
+        if predicted_revenue is not None:
+            st.markdown(f"""
+            <div style="
+                background:#f5f8ff;
+                padding:20px;
+                border-radius:15px;
+                border-left:8px solid red;
+                color:black;
+                font-size:28px;
+                font-weight:700;">
+                Estimated Revenue: ${predicted_revenue:,.2f}
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style="
+                background:#f5f8ff;
+                padding:20px;
+                border-radius:15px;
+                border-left:8px solid red;
+                color:black;
+                font-size:24px;
+                font-weight:700;">
+                Estimated Revenue: Enter values and click Predict Revenue
+            </div>
+            """, unsafe_allow_html=True)
         st.markdown("""
     <style>
     .custom-line {
@@ -239,5 +253,3 @@ label p {
             }
 </style>
 """, unsafe_allow_html=True)
-
-        
