@@ -181,9 +181,9 @@ The model was evaluated using regression metrics.
  Results:
 
 ```
-Confidence Score (R²): 0.95
-RMSE: 13.9
-MAE: 4
+Confidence Score (R²): 0.93
+RMSE: 16
+MAE: 5
 ```
 
 ---
